@@ -35,6 +35,16 @@ class BeerControllerTest {
 
     BeerServiceImpl beerServiceImp=new BeerServiceImpl();
 
+    @Test
+    void getBeerList() throws Exception {
+        given(beerService.listBeers()).willReturn(beerServiceImp.listBeers());
+
+        mockMvc.perform(get("/api/v1/beer")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", is(3)));
+    }
+
 
 
     @Test
