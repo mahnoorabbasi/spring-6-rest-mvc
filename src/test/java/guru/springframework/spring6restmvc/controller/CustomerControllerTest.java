@@ -8,19 +8,24 @@ import guru.springframework.spring6restmvc.services.CustomerService;
 import guru.springframework.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.core.Is.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 @WebMvcTest(CustomerController.class)
 public class CustomerControllerTest {
@@ -40,7 +45,29 @@ public class CustomerControllerTest {
         customerServiceImp=new CustomerServiceImpl();//setting here so that for each test, its a new object
     }
     @Test
-    public void testSaveNewBeer() throws Exception {
+    void testDeleteCustomer() throws Exception {
+        Customer customer=customerServiceImp.getAllCustomers().get(0);
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        ArgumentCaptor<UUID> argumentCaptor=ArgumentCaptor.forClass(UUID.class);
+        verify(customerService).deleteCustomerById(argumentCaptor.capture());
+        assertThat(customer.getId()).isEqualTo(argumentCaptor.getValue());
+    }
+    @Test
+    void testUpdateCustomer() throws Exception {
+        Customer customer=customerServiceImp.getAllCustomers().get(0);
+        customer.setName("Updated Name");
+
+        mockMvc.perform(put("/api/v1/customer/"+customer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isNoContent());
+        verify(customerService).updateCustomerById(any(UUID.class), any(Customer.class));
+    }
+    @Test
+    public void testSaveNewCustomer() throws Exception {
         Customer customer=customerServiceImp.getAllCustomers().get(0);
         customer.setVersion(null);
         customer.setId(null);
