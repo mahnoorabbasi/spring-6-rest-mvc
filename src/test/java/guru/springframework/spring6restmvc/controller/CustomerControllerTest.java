@@ -81,6 +81,8 @@ public class CustomerControllerTest {
         CustomerDTO customer=customerServiceImp.getAllCustomers().get(0);
         customer.setName("Updated Name");
 
+        given(customerService.updateCustomerById(any(),any())).willReturn(Optional.of(customer));
+
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID,customer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)

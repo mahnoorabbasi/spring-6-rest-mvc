@@ -86,6 +86,8 @@ class BeerControllerTest {
         BeerDTO beer=beerServiceImp.listBeers().get(0);
         beer.setBeerName("Updated");
 
+        given(beerService.updateBeerById(any(UUID.class),any(BeerDTO.class))).willReturn(Optional.of(beer));
+
         mockMvc.perform(put(BeerController.BEER_PATH_ID,beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)

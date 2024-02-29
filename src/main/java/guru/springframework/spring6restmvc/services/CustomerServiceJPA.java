@@ -2,7 +2,6 @@ package guru.springframework.spring6restmvc.services;
 
 import guru.springframework.spring6restmvc.mappers.CustomerMapper;
 import guru.springframework.spring6restmvc.model.CustomerDTO;
-import guru.springframework.spring6restmvc.repository.BeerRepository;
 import guru.springframework.spring6restmvc.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +39,18 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
+
+        AtomicReference<Optional<CustomerDTO>> atomicReference=new AtomicReference<>();
+        customerRepository.findById(customerId).ifPresentOrElse(
+                foundCustomer->{
+                    foundCustomer.setName(customer.getName());
+                    atomicReference.set(
+                            Optional.of(customerMapper.customerToCustomerDto(customerRepository.save(foundCustomer)))
+                    );
+                }, ()-> atomicReference.set(Optional.empty())
+        );
+        return atomicReference.get();
 
     }
 

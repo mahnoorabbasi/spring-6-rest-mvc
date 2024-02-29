@@ -24,6 +24,12 @@ class BeerControllerIT {
     @Autowired
     BeerController beerController;
 
+    @Test
+    void testNotFoundUpdateBeer() {
+        assertThrows(NotFoundException.class,()->
+                beerController.updateById(UUID.randomUUID(),BeerDTO.builder().build()));
+    }
+
     @Rollback
     @Transactional
     @Test

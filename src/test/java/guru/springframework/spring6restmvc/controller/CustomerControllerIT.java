@@ -24,6 +24,15 @@ class CustomerControllerIT {
     @Autowired
     CustomerController customerController;
 
+    @Test
+    void testNotFoundUpdateCustomer() {
+        assertThrows(NotFoundException.class, ()->{
+            customerController.updateCustomerByID(UUID.randomUUID(), CustomerDTO.builder()
+                    .name("bruf")
+                    .build());
+        });
+    }
+
     @Rollback
     @Transactional
     @Test
