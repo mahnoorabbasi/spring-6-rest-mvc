@@ -1,7 +1,11 @@
 package guru.springframework.spring6restmvc.controller;
 
+import jakarta.transaction.Transactional;
+import jakarta.transaction.TransactionalException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +18,28 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class CustomErrorController {
+
+
+
+    @ExceptionHandler(TransactionSystemException.class)
+    ResponseEntity handleTrxExc(TransactionSystemException exception){
+
+        if(exception.getCause().getCause() instanceof ConstraintViolationException){
+            ConstraintViolationException ve=(ConstraintViolationException)exception.getCause().getCause();
+            List errors=ve.getConstraintViolations().stream().map(
+                    violation->{
+                        Map map=new HashMap();
+                        map.put(violation.getPropertyPath(), violation.getMessage());
+                        return map;
+                    }
+            ).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+
+        }
+        return ResponseEntity.badRequest().build();//will pass as it will give badrequest, but we need more info
+
+
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleBindingErrors(MethodArgumentNotValidException exception){
