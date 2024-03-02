@@ -26,6 +26,7 @@ class BeerControllerIT {
     BeerController beerController;
     @Autowired
     BeerMapper beerMapper;
+    
 
 
     @Test
