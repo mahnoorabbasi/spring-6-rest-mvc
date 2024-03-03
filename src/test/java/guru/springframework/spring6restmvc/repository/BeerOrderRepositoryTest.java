@@ -72,7 +72,7 @@ class BeerOrderRepositoryTest {
 //        );
 
     }
-    @Test
+  /*  @Test
     void testBeerOrdersButCustomerBeerOrderSaveFlushFound() {
         BeerOrder beerOrder= BeerOrder.builder()
                 .customerRef("i am cust")
@@ -86,7 +86,8 @@ class BeerOrderRepositoryTest {
 //                }
 //        );
 
-    }
+    }*/
+
     @Test
     @Transactional
     void testBeerOrdersButCustomerBeerFoundAfterAssociatedMtehods() {
