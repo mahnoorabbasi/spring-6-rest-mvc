@@ -32,9 +32,18 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Builder
 public class BeerOrder {
+    public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines) {
+        this.id = id;
+        this.version = version;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.customerRef = customerRef;
+        this.setCustomer( customer);//helper assoc method to ensure bidir nature of relationship
+        this.beerOrderLines = beerOrderLines;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -66,6 +75,14 @@ public class BeerOrder {
     //this is a bidirectional mapping
     @ManyToOne
     private Customer customer;
+
+    //association helper method to ensure we get bidirectional mapping at simple save
+    // as we dont want overhead of saveAndFlush
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        customer.getBeerOrders().add(this);
+
+    }
 
     //beer order can have multiple beer order lines
     @OneToMany(mappedBy = "beerOrder")

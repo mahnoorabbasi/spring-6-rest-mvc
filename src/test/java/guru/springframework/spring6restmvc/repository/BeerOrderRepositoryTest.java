@@ -34,7 +34,7 @@ class BeerOrderRepositoryTest {
         testBeer = beerRepository.findAll().get(0);
     }
 
-    @Test
+   /* @Test
     void testBeerOrdersButCustomerBeerOrderNotFound() {
         BeerOrder beerOrder= BeerOrder.builder()
                 .customerRef("i am cust")
@@ -55,7 +55,7 @@ class BeerOrderRepositoryTest {
                 }
                );
 
-    }
+    }*/
     @Test
     @Transactional
     void testBeerOrdersButCustomerBeerOrderFound() {
@@ -85,6 +85,20 @@ class BeerOrderRepositoryTest {
         assertThat(savedBeerOrder.getCustomer().getBeerOrders()).isNotNull();
 //                }
 //        );
+
+    }
+    @Test
+    @Transactional
+    void testBeerOrdersButCustomerBeerFoundAfterAssociatedMtehods() {
+        BeerOrder beerOrder= BeerOrder.builder()
+                .customerRef("i am cust")
+                .customer(testCustomer)
+                .build();
+
+        BeerOrder savedBeerOrder=beerOrderRepository.save(beerOrder);
+        System.out.println(savedBeerOrder.getCustomer().getBeerOrders());
+        assertThat(savedBeerOrder.getCustomer().getBeerOrders()).isNotNull();
+
 
     }
 
