@@ -1,9 +1,6 @@
 package guru.springframework.spring6restmvc.repository;
 
-import guru.springframework.spring6restmvc.entities.Beer;
-import guru.springframework.spring6restmvc.entities.BeerOrder;
-import guru.springframework.spring6restmvc.entities.BeerOrderLine;
-import guru.springframework.spring6restmvc.entities.Customer;
+import guru.springframework.spring6restmvc.entities.*;
 import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,14 +91,21 @@ class BeerOrderRepositoryTest {
         BeerOrder beerOrder= BeerOrder.builder()
                 .customerRef("i am cust")
                 .customer(testCustomer)
+                .beerOrderShipment(BeerOrderShipment.builder()
+                        .trackingNumber("1234")
+                        .build())
                 .build();
 
         BeerOrder savedBeerOrder=beerOrderRepository.save(beerOrder);
         System.out.println(savedBeerOrder.getCustomer().getBeerOrders());
+        System.out.println(savedBeerOrder.getBeerOrderShipment());
+        System.out.println(savedBeerOrder.getBeerOrderShipment().getBeerOrder().getCustomerRef());
+
         assertThat(savedBeerOrder.getCustomer().getBeerOrders()).isNotNull();
 
 
     }
+
 
 
 }
