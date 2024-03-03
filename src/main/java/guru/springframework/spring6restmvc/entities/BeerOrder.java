@@ -35,7 +35,8 @@ import java.util.UUID;
 //@AllArgsConstructor
 @Builder
 public class BeerOrder {
-    public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer, Set<BeerOrderLine> beerOrderLines) {
+    public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer,
+                     Set<BeerOrderLine> beerOrderLines, BeerOrderShipment beerOrderShipment) {
         this.id = id;
         this.version = version;
         this.createdDate = createdDate;
@@ -43,6 +44,7 @@ public class BeerOrder {
         this.customerRef = customerRef;
         this.setCustomer( customer);//helper assoc method to ensure bidir nature of relationship
         this.beerOrderLines = beerOrderLines;
+        this.beerOrderShipment=beerOrderShipment;
     }
 
     @Id
@@ -87,4 +89,7 @@ public class BeerOrder {
     //beer order can have multiple beer order lines
     @OneToMany(mappedBy = "beerOrder")
     private Set<BeerOrderLine> beerOrderLines;
+
+    @OneToOne
+    private BeerOrderShipment beerOrderShipment;
 }
