@@ -1,9 +1,9 @@
-//package guru.springframework.spring6restmvc.services.v2;
+//package guru.springframework.spring6restmvc.services;
 //
 //import guru.springframework.spring6restmvc.model.BeerDTO;
 //import guru.springframework.spring6restmvc.model.BeerStyle;
-//import org.springframework.data.domain.Page;
 //
+//import java.util.List;
 //import java.util.Optional;
 //import java.util.UUID;
 //
@@ -12,7 +12,7 @@
 // */
 //public interface BeerService {
 //
-//    Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize);
+//    List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory);
 //
 //    Optional<BeerDTO> getBeerById(UUID id);
 //

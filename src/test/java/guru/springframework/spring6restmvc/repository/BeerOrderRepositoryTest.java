@@ -56,9 +56,11 @@ class BeerOrderRepositoryTest {
     @Test
     @Transactional
     void testBeerOrdersButCustomerBeerOrderFound() {
+        BeerOrderShipment beerOrderShipment=BeerOrderShipment.builder().build();
         BeerOrder beerOrder= BeerOrder.builder()
                 .customerRef("i am cust")
                 .customer(testCustomer)
+                .beerOrderShipment(beerOrderShipment)
                 .build();
 
         BeerOrder savedBeerOrder=beerOrderRepository.save(beerOrder);// this will save the beer order and set

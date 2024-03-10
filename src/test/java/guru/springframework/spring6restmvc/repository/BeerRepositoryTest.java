@@ -25,7 +25,7 @@ class BeerRepositoryTest {
 
     @Test
     void findAllByBeerNameIsLikeIgnoreCaseTest() {
-        List<Beer> beerList=beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%");
+        List<Beer> beerList=beerRepository.findAllByBeerNameIsLikeIgnoreCase("%IPA%",null).getContent();
         assertThat(beerList.size()).isEqualTo(336);
     }
 

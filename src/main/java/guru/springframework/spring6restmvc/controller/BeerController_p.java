@@ -1,16 +1,11 @@
-//package guru.springframework.spring6restmvc.controller.v2;
+//package guru.springframework.spring6restmvc.controller;
 //
-//import guru.springframework.spring6restmvc.controller.NotFoundException;
 //import guru.springframework.spring6restmvc.model.BeerDTO;
 //import guru.springframework.spring6restmvc.model.BeerStyle;
-//import guru.springframework.spring6restmvc.services.v2.BeerService;
+//import guru.springframework.spring6restmvc.services.BeerService;
 //import jakarta.validation.Valid;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Qualifier;
-//import org.springframework.context.annotation.Primary;
-//import org.springframework.context.annotation.Profile;
-//import org.springframework.data.domain.Page;
 //import org.springframework.http.HttpHeaders;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
@@ -20,19 +15,21 @@
 //import java.util.List;
 //import java.util.UUID;
 //
+///**
+// * Created by jt, Spring Framework Guru.
+// */
 //@Slf4j
 //@RequiredArgsConstructor
-//@RestController(value = "beerControllerV2")
-////@Profile("v2")
+//@RestController
 //public class BeerController {
 //
-//    public static final String BEER_PATH = "/api/v2/beer";
+//    public static final String BEER_PATH = "/api/v1/beer";
 //    public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 //
 //    private final BeerService beerService;
 //
 //    @PatchMapping(BEER_PATH_ID)
-//    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
+//    public ResponseEntity updateBeerPatchById(@PathVariable("beerId")UUID beerId, @RequestBody BeerDTO beer){
 //
 //        beerService.patchBeerById(beerId, beer);
 //
@@ -59,7 +56,7 @@
 //    }
 //
 //    @PostMapping(BEER_PATH)
-//    public ResponseEntity handlePost(@Valid @RequestBody BeerDTO beer){
+//    public ResponseEntity handlePost(@Validated @RequestBody BeerDTO beer){
 //
 //        BeerDTO savedBeer = beerService.saveNewBeer(beer);
 //
@@ -70,12 +67,9 @@
 //    }
 //
 //    @GetMapping(value = BEER_PATH)
-//    public Page<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
-//                                   @RequestParam(required = false) BeerStyle beerStyle,
-//                                   @RequestParam(required = false) Boolean showInventory,
-//                                   @RequestParam(required = false) int pageNumber,
-//                                   @RequestParam(required = false) int pageSize){
-//        return beerService.listBeers(beerName, beerStyle, showInventory,pageNumber,pageSize);
+//    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+//                                   @RequestParam(required = false)BeerStyle beerStyle, Boolean showInventory){
+//        return beerService.listBeers(beerName, beerStyle, showInventory);
 //    }
 //
 //

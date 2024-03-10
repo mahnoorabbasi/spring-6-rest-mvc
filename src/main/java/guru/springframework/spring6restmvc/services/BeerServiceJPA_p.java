@@ -1,95 +1,59 @@
-//package guru.springframework.spring6restmvc.services.v2;
+//package guru.springframework.spring6restmvc.services;
 //
 //import guru.springframework.spring6restmvc.entities.Beer;
 //import guru.springframework.spring6restmvc.mappers.BeerMapper;
 //import guru.springframework.spring6restmvc.model.BeerDTO;
 //import guru.springframework.spring6restmvc.model.BeerStyle;
-//import guru.springframework.spring6restmvc.repository.v2.BeerRepository;
+//import guru.springframework.spring6restmvc.repository.BeerRepository;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.context.annotation.Primary;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Sort;
 //import org.springframework.stereotype.Service;
 //import org.springframework.util.StringUtils;
 //
+//import java.util.List;
 //import java.util.Optional;
 //import java.util.UUID;
 //import java.util.concurrent.atomic.AtomicReference;
+//import java.util.stream.Collectors;
 //
-//@Service(value = "beerServiceJPAV2")
+//@Service
 //@Primary
 //@RequiredArgsConstructor
-//
-//
 //public class BeerServiceJPA implements BeerService {
 //    private final BeerRepository beerRepository;
-//    private static final int DEFAULT_PAGE = 0;
-//    private static final int DEFAULT_PAGE_SIZE = 25;
-//
 //    private final BeerMapper beerMapper;
 //    @Override
-//    public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
-//
-//        PageRequest pageRequest=buildPageRequest(pageNumber, pageSize);
-//
-//
-//        Page<Beer> beerList;
+//    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory) {
+//        List<Beer> beerList;
 //        if(StringUtils.hasText(beerName) && beerStyle==null){
-//            beerList=listBeersByName(beerName, pageRequest);
+//            beerList=listBeersByName(beerName);
 //        }
 //        else if(!StringUtils.hasText(beerName) &&beerStyle!=null){
-//            beerList=listBeersByStyle(beerStyle,pageRequest);
+//            beerList=listBeersByStyle(beerStyle);
 //        }else if (StringUtils.hasText(beerName) && beerStyle != null){
-//            beerList = listBeersByNameAndStyle(beerName, beerStyle,pageRequest);
+//            beerList = listBeersByNameAndStyle(beerName, beerStyle);
 //        }
 //        else
-//            beerList=beerRepository.findAll(pageRequest);
+//            beerList=beerRepository.findAll();
 //
 //        if(showInventory!=null && !showInventory){
 //            beerList.forEach(beer -> beer.setQuantityOnHand(null));
 //        }
 //
 //
-//
-//        return beerList.map(beerMapper::beerToBeerDto);
+//        return beerList.stream().map(beerMapper::beerToBeerDto).collect(Collectors.toList());
 //    }
 //
-//    public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize) {
-//        int queryPageNumber;
-//        int queryPageSize;
-//
-//        if (pageNumber != null && pageNumber > 0) {
-//            queryPageNumber = pageNumber - 1;
-//        } else {
-//            queryPageNumber = DEFAULT_PAGE;
-//        }
-//
-//        if (pageSize == null) {
-//            queryPageSize = DEFAULT_PAGE_SIZE;
-//        } else {
-//            if (pageSize > 1000) {
-//                queryPageSize = 1000;
-//            } else {
-//                queryPageSize = pageSize;
-//            }
-//        }
-//
-//        Sort sort=Sort.by(Sort.Order.asc("beerName"));
-//
-//        return PageRequest.of(queryPageNumber, queryPageSize,sort);
-//    }
-//
-//    private Page<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle, PageRequest pageRequest) {
-//        return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%"+beerName+"%", beerStyle,pageRequest);
+//    private List<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle) {
+//        return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%"+beerName+"%", beerStyle);
 //
 //    }
 //
-//    public Page<Beer> listBeersByName(String beerName, PageRequest pageRequest){
-//        return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%"+beerName+"%",pageRequest);
+//    public List<Beer> listBeersByName(String beerName){
+//        return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%"+beerName+"%");
 //    }
-//    public Page<Beer> listBeersByStyle(BeerStyle beerStyle, PageRequest pageRequest){
-//        return beerRepository.findAllByBeerStyle(beerStyle,pageRequest);
+//    public List<Beer> listBeersByStyle(BeerStyle beerStyle){
+//        return beerRepository.findAllByBeerStyle(beerStyle);
 //    }
 //
 //    @Override
