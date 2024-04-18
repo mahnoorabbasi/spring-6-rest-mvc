@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -82,8 +83,8 @@ class BeerControllerIT {
                         .queryParam("pageNumber", "2")
                         .queryParam("pageSize", "50")
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD)))
-
+//                        .with(httpBasic(USER_1, PASSWORD)))
+                        .with(jwt()))
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.content.size()", is(50)))
@@ -99,7 +100,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "true")
                         .queryParam("pageSize", "800")
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.size()", is(310)))
@@ -114,7 +115,7 @@ class BeerControllerIT {
                         .queryParam("showInventory", "TRUE")
                         .queryParam("pageSize", "800")
                         .queryParam("pageNumber", "1")
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.size()", is(310)))
                 .andExpect(jsonPath("$.content[0].quantityOnHand").value(IsNull.notNullValue()))
@@ -128,7 +129,7 @@ class BeerControllerIT {
                         .queryParam("beerName", "IPA")
                         .queryParam("pageSize", "800")
                         .queryParam("pageNumber", "1")
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.size()", is(310)))
                 .andExpect(status().isOk());
@@ -140,7 +141,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("pageSize", "800")
                         .queryParam("pageNumber", "1")
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.size()", is(548)))
                 .andExpect(status().isOk());
@@ -152,7 +153,7 @@ class BeerControllerIT {
         mockMvc.perform(get(BeerController.BEER_PATH)
                         .queryParam("beerName", "IPA")
                         .queryParam("pageSize", "380")
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.size()", is(336)))
                 .andExpect(status().isOk());
@@ -175,7 +176,7 @@ class BeerControllerIT {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerMap))
-                        .with(httpBasic(USER_1, PASSWORD)))
+                        .with(jwt()))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 

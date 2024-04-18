@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.core.Is.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -64,7 +65,7 @@ public class CustomerControllerTest {
         customerMap.put("name", "Updated name");
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID,customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customerMap)))
                 .andExpect(status().isNoContent());
@@ -82,7 +83,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId())
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD)))
+                        .with(jwt()))
                 .andExpect(status().isNoContent());
         verify(customerService).deleteCustomerById(uuidArgumentCaptor.capture());
         assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
@@ -97,7 +98,7 @@ public class CustomerControllerTest {
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID,customer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                 .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isNoContent());
         verify(customerService).updateCustomerById(any(UUID.class), any(CustomerDTO.class));
@@ -112,7 +113,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD))
+                        .with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customer)))
 //                .andExpect(jsonPath("$.id", is(beerServiceImp.listBeers().get(1).getId()))) //in post we are not returing any object
@@ -129,7 +130,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
-                        .with(httpBasic(USER_1, PASSWORD)))
+                        .with(jwt()))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(3)));
     }
@@ -140,7 +141,7 @@ public class CustomerControllerTest {
         given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID())
-                .with(httpBasic(USER_1, PASSWORD)))
+                .with(jwt()))
                 .andExpect(status().isNotFound());
     }
     @Test
@@ -151,7 +152,7 @@ public class CustomerControllerTest {
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID,testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON)
-                .with(httpBasic(USER_1, PASSWORD)))
+                .with(jwt()))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(testCustomer.getId().toString())))
                 .andExpect(jsonPath("$.name", is(testCustomer.getName())));
