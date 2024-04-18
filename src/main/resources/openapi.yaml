@@ -1,0 +1,510 @@
+openapi: 3.0.0
+info:
+  title: My API
+  version: 1.0.0
+paths:
+  /splitdesigns:
+    get:
+      summary: Get all Split Designs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SplitDesign'
+    post:
+      summary: Create a new Split Design
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplitDesign'
+      responses:
+        '201':
+          description: Created
+  /splitdesigns/{id}:
+    get:
+      summary: Get a split design by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the split design to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SplitDesign'
+        '404':
+          description: Split design not found
+    put:
+      summary: Update a split design
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the split design to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplitDesign'
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SplitDesign'
+        '404':
+          description: Split design not found
+    delete:
+      summary: Delete a split design
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the split design to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Successfully deleted
+        '404':
+          description: Split design not found
+  /split_transformation:
+    post:
+      summary: Perform split transformation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplitDesign'
+      responses:
+        '200':
+          description: Successful transformation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SplitDesign'
+  /split_export:
+    post:
+      summary: Export split data as zip file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplitDesign'
+      responses:
+        '200':
+          description: Zip file generated successfully
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+                example: <binary_data>
+        '404':
+          description: Data not found
+  /split_designs/save_as:
+    post:
+      summary: Save SplitDesign with a new name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplitDesignSaveRequest'
+      responses:
+        '200':
+          description: SplitDesign saved successfully with a new name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SplitDesign'
+        '404':
+          description: Data not found
+  /split_designs/import_from_files:
+    post:
+      summary: Import SplitDesign from Excel and Fuji files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                excel_file:
+                  type: string
+                  format: binary
+                fuji_zip_file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: SplitDesign imported successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SplitDesign'
+        '400':
+          description: Bad request, invalid files
+        '500':
+          description: Internal server error
+
+  /fujiinfos:
+    get:
+      summary: Get all FUJI Infos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FUJIInfo'
+    post:
+      summary: Create a new FUJI Info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FUJIInfo'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    SplitDesignSaveRequest:
+      type: object
+      properties:
+        splitDesign:
+          $ref: '#/components/schemas/SplitDesign'
+        newName:
+          type: string
+    SplitDesign:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        project:
+          type: string
+        op_temp:
+          type: string
+        mold_cap:
+          type: string
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+        fuji_infos:
+          type: array
+          items:
+            $ref: '#/components/schemas/FUJIInfo'
+      required:
+        - id
+        - name
+        - project
+    Split:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        split_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/SplitRecord'
+      required:
+        - id
+    SplitRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        ref_des:
+          type: string
+        part_number:
+          type: string
+        part_type:
+          type: string
+      required:
+        - id
+        - ref_des
+        - part_number
+        - part_type
+    FUJIInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        fuji_records:
+          type: array
+          items:
+            $ref: '#/components/schemas/FUJIRecord'
+      required:
+        - id
+    FUJIRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        ref_des:
+          type: string
+        x:
+          type: number
+          format: float
+        y:
+          type: number
+          format: float
+        theta:
+          type: number
+          format: float
+        body_size:
+          type: string
+        t:
+          type: boolean
+        b:
+          type: boolean
+      required:
+        - id
+        - ref_des
+        - x
+        - y
+        - theta
+        - body_size
+        - t
+        - b
+    SplitFUJIMapping:
+      type: object
+      properties:
+        id:
+          type: integer
+        split_id:
+          type: integer
+        fuji_info_id:
+          type: integer
+    Capacitor:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        capacitance_value_pf:
+          type: string
+        dc_voltage:
+          type: string
+        temp_coef_cap_non_elect:
+          type: string
+        capacitor_tolerance_positive:
+          type: string
+        q_type:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    CoilFixed:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        inductance_nh:
+          type: string
+        polarized:
+          type: boolean
+        inductance_tolerance:
+          type: string
+        q_factor:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    Resistor:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        resist_res_fixed_ohms:
+          type: string
+        power_dissipation:
+          type: string
+        resist_tol_res_fixed:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    Crystal:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        frequency_crystal:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    FerriteBead:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        impedance:
+          type: string
+        impedance_tolerance:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    RFComponent:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        type_rf_component:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    Thermistor:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        body_type:
+          type: string
+        resist_res_thermistor:
+          type: string
+        resist_tol_res_thermistor:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        termination_type:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    Wafer:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        mask_project:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
+    Die:
+      type: object
+      properties:
+        id:
+          type: integer
+        part_number:
+          type: string
+        mask_project:
+          type: string
+        mfr_name:
+          type: string
+        mfr_part_number:
+          type: string
+        lifecycle_phase:
+          type: string
+        height_z_per_mm_sap:
+          type: string
